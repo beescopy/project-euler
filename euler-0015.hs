@@ -15,18 +15,13 @@ countOnes cList cCounter
     | null cList      = cCounter
     | head cList == 1 = countOnes (tail cList) (succ cCounter)
     | otherwise       = countOnes (tail cList) (cCounter)
-    
 
-countElements :: [a] -> Int -> Int
-countElements cList cCounter
-    | null cList = cCounter
-    | otherwise  = countElements (tail cList) (succ cCounter)
 
 getAllRoutes :: Int -> Int -> [[Int]] -> [[Int]]
 getAllRoutes gMaximum gCounter gListOfRoutes
-    | gCounter >= gMaximum       = gListOfRoutes
-    | countOnes gDTB 0 == 10 = getAllRoutes gMaximum (succ gCounter) (gListOfRoutes ++ [gDTB])
-    | otherwise                  = getAllRoutes gMaximum (succ gCounter) gListOfRoutes
+    | gCounter >= gMaximum      = gListOfRoutes
+    | countOnes gDTB 0 == 10    = getAllRoutes gMaximum (succ gCounter) (gListOfRoutes ++ [gDTB])
+    | otherwise                 = getAllRoutes gMaximum (succ gCounter) gListOfRoutes
     where
         gDTB = decToBin gCounter 20 []
 
@@ -40,6 +35,6 @@ main = do
     print (binToDec [0,1,0,1] 0 0)
     print (binToDec [0,0,1,1] 0 0)
     print (decToBin 1048576 20 [])
-    print (countElements [] 0)
-    print (countElements [1,1,2] 0)
-    print (getAllRoutes 16 0 [])
+    print (countOnes [1,0,0] 0)
+    print (countOnes (decToBin 31 20 []) 0 == 5)
+    print (length (getAllRoutes (2^20) 1 []))
