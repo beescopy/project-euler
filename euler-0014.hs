@@ -22,9 +22,9 @@ listOfAllCollatzChainLengthsUpTo a n savedList
     | a > n = savedList
     | otherwise = savedList ++ listOfAllCollatzChainLengthsUpTo (a + 1) n [(a + 1, collatzChainLength (a + 1) 1 )]
 
+first :: (Int, Int) -> Int
+first (a, b) = a
+
 main :: IO ()
 main = do
-    print (collatzChainLength 9 1)
-    print (listOfAllCollatzChainLengthsUpTo 1 100 [(0,0)])
-    print (biggestCollatzChainLength (listOfAllCollatzChainLengthsUpTo 1 999999 [(0,0)]))
-
+    print $ first (biggestCollatzChainLength (listOfAllCollatzChainLengthsUpTo 1 999999 [(0,0)]))
