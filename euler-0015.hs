@@ -1,9 +1,11 @@
+import Debug.Trace (trace)
+import Control.Monad (replicateM)
+
 binToDec :: [Int] -> Int -> Int -> Int
 binToDec bInput bExp bMemory
     | null bInput = bMemory
     | otherwise   = binToDec (init bInput) (succ bExp) (bMemory + ((last bInput) * 2^bExp))
 
--- maximum == 2^21 - 1 == 2.097.151
 decToBin :: Int -> Int -> [Int] -> [Int]
 decToBin bInput bExp bMemory
     | bExp      <= -1     = bMemory
@@ -16,25 +18,24 @@ countOnes cList cCounter
     | head cList == 1 = countOnes (tail cList) (succ cCounter)
     | otherwise       = countOnes (tail cList) (cCounter)
 
-
-getAllRoutes :: Int -> Int -> [[Int]] -> [[Int]]
-getAllRoutes gMaximum gCounter gListOfRoutes
-    | gCounter >= gMaximum      = gListOfRoutes
-    | countOnes gDTB 0 == 10    = getAllRoutes gMaximum (succ gCounter) (gListOfRoutes ++ [gDTB])
-    | otherwise                 = getAllRoutes gMaximum (succ gCounter) gListOfRoutes
+getAllRoutes :: Int -> Int -> Int -> [[Int]] -> Int
+getAllRoutes gMaximumExp gCounter routeCounter gListOfRoutes
+    | gCounter >= gMaximum                      = routeCounter
+    | countOnes gDTB 0 == (gMaximumExp `div` 2) = {-trace ((show gDTB) ++ " " ++ (show routeCounter)) $-} getAllRoutes gMaximumExp (succ gCounter) (succ routeCounter) (gListOfRoutes ++ [gDTB])
+    | otherwise                                 = getAllRoutes gMaximumExp (succ gCounter) routeCounter gListOfRoutes
     where
-        gDTB = decToBin gCounter 20 []
+        gDTB     = decToBin gCounter (gMaximumExp - 1) []
+        gMaximum = (2^gMaximumExp)
+
+allRoutes :: [[Integer]]
+allRoutes = filter (\lst -> count 0 lst == 20) (replicateM 40 [0,1])
+    where
+        count x = length . filter (== x)
+
 
 main :: IO()
 main = do
-    print (binToDec [1,1,0,0,0,1] 0 0)
-    print (binToDec [1,1,0,0] 0 0)
-    print (binToDec [1,0,1,0] 0 0)
-    print (binToDec [1,0,0,1] 0 0)
-    print (binToDec [0,1,1,0] 0 0)
-    print (binToDec [0,1,0,1] 0 0)
-    print (binToDec [0,0,1,1] 0 0)
-    print (decToBin 1048576 20 [])
-    print (countOnes [1,0,0] 0)
-    print (countOnes (decToBin 31 20 []) 0 == 5)
-    print (length (getAllRoutes (2^20) 1 []))
+    let a = 40
+    let b = a `div` 2
+    --print (getAllRoutes a ((2^b)-1) 0 [])
+    print $ length (allRoutes)
